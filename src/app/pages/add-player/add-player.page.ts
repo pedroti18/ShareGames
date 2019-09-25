@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Player } from '../../model/player';
 import { PlayerService } from '../../services/player.service';
 import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-add-player',
@@ -15,6 +17,7 @@ export class AddPlayerPage implements OnInit {
   constructor(
     protected playerService: PlayerService,
     protected alertController: AlertController,
+    protected router:Router
   ) { }
 
   ngOnInit() {
@@ -22,9 +25,12 @@ export class AddPlayerPage implements OnInit {
 
   onsubmit(form){
     this.playerService.save(this.player).then(
-      res=>{
-        console.log("Cadastrado!");
-        this.presentAlert("Aviso" , "Cadastrado!")
+      res=> {
+        form.reset();
+        this.player = new Player;
+        //+console.log("Cadastrado!");
+        this.presentAlert("Aviso", "Cadastrado!")
+        this.router.navigate(['/tabs/listPlayer']);
     },
       erro=>{
         console.log("Erro: " + erro);

@@ -28,12 +28,12 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'tab3',
+        path: 'perfilPlayer/:id',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+              import('../pages/perfil-player/perfil-player.module').then(m => m.PerfilPlayerPageModule)
           }
         ]
       },
