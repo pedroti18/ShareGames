@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { Player } from 'src/app/model/player';
-import { PlayerService } from 'src/app/services/player.service';
+import { Gamer } from 'src/app/model/gamer';
+import { GamerService } from 'src/app/services/gamer.service';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-add-player',
-  templateUrl: './add-player.page.html',
-  styleUrls: ['./add-player.page.scss'],
+  selector: 'app-add-gamer',
+  templateUrl: './add-gamer.page.html',
+  styleUrls: ['./add-gamer.page.scss'],
 })
-export class AddPlayerPage implements OnInit {
+export class AddGamerPage implements OnInit {
 
-  protected player: Player = new Player;
+  protected gamer: Gamer = new Gamer;
 
   constructor(
-    protected playerService: PlayerService,
+    protected GamerService: GamerService,
     protected alertController: AlertController,
     protected router:Router
   ) { }
@@ -23,13 +23,13 @@ export class AddPlayerPage implements OnInit {
   }
 
   onsubmit(form) {
-    this.playerService.save(this.player).then(
+    this.GamerService.save(this.gamer).then(
       res => {
         form.reset();
-        this.player = new Player;
+        this.gamer = new Gamer;
         //+console.log("Cadastrado!");
         this.presentAlert("Aviso", "Cadastrado!")
-        this.router.navigate(['/tabs/listPlayer']);
+        this.router.navigate(['/tabs/listGamer']);
       },
       erro => {
         console.log("Erro: " + erro);

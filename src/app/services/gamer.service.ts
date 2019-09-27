@@ -1,31 +1,33 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Player } from '../model/player';
+import { Gamer } from '../model/gamer';
 import { map } from 'rxjs/operators';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class PlayerService {
+export class GamerService {
 
   constructor(
     protected fire: AngularFirestore
   ) { }
 
-  save(player) {
-    return this.fire.collection("players")
+  save(gamer) {
+    return this.fire.collection("gamer")
       .add({
-        nome: player.nome,
-        nickname: player.nickname,
-        email: player.email,
-        pws: player.pws,
+        nome: gamer.nome,
+        categoria: gamer.categoria,
+        console: gamer.console,
+        descricao: gamer.descricao,
+        quantidade: gamer.qtd,
+        valor: gamer.valor,
         ativo: true
       });
   }
 
   gelAll() {
-    return this.fire.collection("players").snapshotChanges()
+    return this.fire.collection("gamer").snapshotChanges()
       .pipe(
         map(dados =>
           dados.map(d => ({ key: d.payload.doc.id, ...d.payload.doc.data() }))
@@ -34,6 +36,6 @@ export class PlayerService {
   }
 
   get(id){
-    return this.fire.collection("players").doc<Player>(id).valueChanges();
+    return this.fire.collection("gamer").doc<Gamer>(id).valueChanges();
   }
 }

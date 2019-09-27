@@ -28,6 +28,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'listGamer',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../pages/list-gamer/list-gamer.module').then(m => m.ListGamerPageModule)
+          }
+        ]
+      },
+      {
         path: 'perfilPlayer/:id',
         children: [
           {
@@ -38,17 +48,48 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'addPlayer',
+        path: 'perfilGamer/:id',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('../pages/add-player/add-player.module').then(m => m.AddPlayerPageModule)
-
-              //loadChildren: '../pages/add-player/add-player.module#AddPlayerPageModule'
+              import('../pages/perfil-gamer/perfil-gamer.module').then(m => m.PerfilGamerPageModule)
           }
         ]
       },
+      {
+        path: 'tab3',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+          }
+        ]
+      },
+      {
+        path: 'addPlayer',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../pages/add-player/add-player.module').then(m => m.AddPlayerPageModule)
+            
+            //loadChildren: '../pages/add-player/add-player.module#AddPlayerPageModule'
+          }
+        ]
+      },
+      {
+        path: 'addGamer',
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../pages/add-gamer/add-gamer.module').then(m => m.AddGamerPageModule)
+            
+            //loadChildren: '../pages/add-player/add-player.module#AddPlayerPageModule'
+          }
+        ]
+      },
+      
       {
         path: '',
         redirectTo: '/tabs/tab1',

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PlayerService } from '../../services/player.service';
-
+import { PlayerService } from 'src/app/services/player.service';
 
 @Component({
   selector: 'app-list-player',
@@ -17,25 +16,22 @@ export class ListPlayerPage implements OnInit {
 
   ngOnInit() {
     this.playerService.gelAll().subscribe(
-      res=> {
+      res => {
         this.players = res;
+      }
+    )
+  }
 
-    }
-  )   
-}
-
-  doRefresh(event) {
-    console.log('Begin async operation');
+  async doRefresh(event) {
+    //console.log('Begin async operation');
     this.playerService.gelAll().subscribe(
-      res=> {
-        this.players = res
+      res => {
+         this.players = res;
         setTimeout(() => {
-          console.log('Async operation has ended');
+          //console.log('Async operation has ended');
           event.target.complete();
-        }, 0);
+        }, 500);
       }
     );
   }
 }
-
-
