@@ -36,4 +36,16 @@ export class PlayerService {
   get(id){
     return this.fire.collection("players").doc<Player>(id).valueChanges();
   }
+
+
+update(player: Player, id: string) {
+  return this.fire.collection("players").doc<Player>(id).update(player);
+  }
+
+
+remove(player) {
+  return this.fire.collection("players").doc(player.key).delete();
+
+}
+
 }

@@ -1,6 +1,7 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Cadastro do Player</ion-title>
+    <ion-title *ngIf="!id">Cadastro do Player</ion-title>
+    <ion-title *ngIf="id">Atualizar do Player</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -33,7 +34,7 @@
     </ion-item>
     <ion-text color="danger" *ngIf="(pws.value != conf.value) && pws.dirty">Senhas diferentes.</ion-text>
 
-    <ion-item lines="none">
+    <ion-item lines="none" *ngIf="id">
       <ion-button type="submit" color="primary" [disabled]="fc.invalid || (pws.value != conf.value)">Salvar</ion-button>
       <ion-button type="reset" color="danger">Cancelar</ion-button>
     </ion-item>
