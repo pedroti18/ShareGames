@@ -14,6 +14,7 @@ export class AddPlayerPage implements OnInit {
 
   protected player: Player = new Player;
   protected id: any = null;
+  protected preview: any = null;
 
   constructor(
     protected playerService: PlayerService,
@@ -36,7 +37,11 @@ export class AddPlayerPage implements OnInit {
   }
 
   onsubmit(form) {
+    if (!this.preview){
+      this.presentAlert("Erro","Deve inserir foto do perfil!");
+    }else
     if (!this.id) {
+      this.player.foto = this.preview;
       this.playerService.save(this.player).then(
         res => {
           form.reset();
@@ -78,7 +83,7 @@ export class AddPlayerPage implements OnInit {
       // imageData is either a base64 encoded string or a file URI
       // If it's base64 (DATA_URL):
       let base64Image = 'data:image/jpeg;base64,' + imageData;
-      console.log(base64Image);
+      this.preview = base64Image;
     }, (err) => {
       // Handle error
     });
