@@ -4,6 +4,7 @@ import { PlayerService } from 'src/app/services/player.service';
 import { AlertController } from '@ionic/angular';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-add-player',
@@ -11,17 +12,20 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
   styleUrls: ['./add-player.page.scss'],
 })
 export class AddPlayerPage implements OnInit {
-
+  
   protected player: Player = new Player;
   protected id: any = null;
   protected preview: any = null;
+  protected posLat: number = 0;
+  protected posLng: number = 0;
 
   constructor(
     protected playerService: PlayerService,
     protected alertController: AlertController,
     protected activedRoute: ActivatedRoute,
     protected router: Router,
-    private camera: Camera
+    private camera: Camera,
+    private geolocation: Geolocation
   ) { }
 
   ngOnInit() {
@@ -30,44 +34,51 @@ export class AddPlayerPage implements OnInit {
       this.playerService.get(this.id).subscribe(
         res => {
           this.player = res
+          this.preview = this.player.foto
         },
-        erro => this.id = null
+        //erro => this.id = null
       )
     }
+    //Localização atual
+    this.localAtual()
   }
 
   onsubmit(form) {
-    if (!this.preview){
-      this.presentAlert("Erro","Deve inserir foto do perfil!");
-    }else
-    if (!this.id) {
-      this.player.foto = this.preview;
-      this.playerService.save(this.player).then(
-        res => {
-          form.reset();
-          this.player = new Player;
-          //console.log("Cadastrado!");
-          this.presentAlert("Aviso", "Cadastrado!")
-          this.router.navigate(['/tabs/listPlayer']);
-        },
-        erro => {
-          console.log("Erro: " + erro);
-          this.presentAlert("Erro", "Não foi possivel cadastrar!")
-        }
-      )
+    if (!this.preview) {
+      this.presentAlert("Erro", "Deve inserir uma foto do perfil!");
     } else {
-      this.playerService.update(this.player, this.id).then(
-        res => {
-          form.reset();
-          this.player = new Player;
-          this.presentAlert("Aviso", "Atualizado!")
-          this.router.navigate(['/tabs/listPlayer']);
-        },
-        erro => {
-          console.log("Erro: " + erro);
-          this.presentAlert("Erro", "Não foi possivel atualizar!")
-        }
-      )
+      this.player.foto = this.preview;
+      this.player.lat = this.posLat;
+      this.player.lng = this.posLng;
+
+      if (!this.id) {
+        this.playerService.save(this.player).then(
+          res => {
+            form.reset();
+            this.player = new Player;
+            //console.log("Cadastrado!");
+            this.presentAlert("Aviso", "Cadastrado!")
+            this.router.navigate(['/tabs/perfilPlayer', res.id]);
+          },
+          erro => {
+            console.log("Erro: " + erro);
+            this.presentAlert("Erro", "Não foi possivel cadastrar!")
+          }
+        )
+      } else {
+        this.playerService.update(this.player, this.id).then(
+          res => {
+            form.reset();
+            this.player = new Player;
+            this.presentAlert("Aviso", "Atualizado!")
+            this.router.navigate(['/tabs/perfilPlayer', this.id]);
+          },
+          erro => {
+            console.log("Erro: " + erro);
+            this.presentAlert("Erro", "Não foi possivel atualizar!")
+          }
+        )
+      }
     }
   }
 
@@ -89,6 +100,16 @@ export class AddPlayerPage implements OnInit {
     });
   }
 
+  localAtual() {
+    this.geolocation.getCurrentPosition().then(
+      resp => {
+        this.posLat = resp.coords.latitude;
+        this.posLng = resp.coords.longitude;
+      }).catch(
+        error => {
+          console.log('Não foi possivel pegar sua localização!', error);
+        });
+  }
 
   //Alerts-------------------
   async presentAlert(tipo: string, texto: string) {

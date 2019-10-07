@@ -8,8 +8,8 @@
 
 <ion-content>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="danger" routerLink="/tabs/addPlayer">
-      <ion-icon name="add"></ion-icon>
+    <ion-fab-button color="dark" routerLink="/tabs/addPlayer">
+      <ion-icon name="person-add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
@@ -23,7 +23,7 @@
 
       <ion-item routerLink="/tabs/perfilPlayer/{{p.key}}">
         <ion-avatar slot="start">
-          <img src="https://picsum.photos/100">
+          <img src="{{p.foto}}">
         </ion-avatar>
         <ion-label>{{ p.nickname }}</ion-label>
         <ion-text>{{ p.email }}</ion-text>

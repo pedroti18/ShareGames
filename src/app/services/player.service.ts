@@ -21,7 +21,9 @@ export class PlayerService {
         email: player.email,
         pws: player.pws,
         foto: player.foto,
-        ativo: true
+        ativo: player.ativo,
+        lat: player.lat,
+        lng: player.lng
       });
   }
 
@@ -43,7 +45,7 @@ export class PlayerService {
       .update(player);
   }
 
-  remove(player:any){
+  remove(player: any) {
     return this.fire.collection("players").doc(player.key).delete();
   }
 }

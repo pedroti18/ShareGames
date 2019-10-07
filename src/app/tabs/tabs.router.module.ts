@@ -18,6 +18,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'login',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../pages/login-usuario/login-usuario.module').then(m => m.LoginUsuarioPageModule)
+          }
+        ]
+      },
+      {
         path: 'listPlayer',
         children: [
           {
