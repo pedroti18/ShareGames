@@ -16,7 +16,6 @@ import {
   LocationService
 } from '@ionic-native/google-maps';
 
-
 @Component({
   selector: 'app-add-player',
   templateUrl: './add-player.page.html',
@@ -32,7 +31,6 @@ export class AddPlayerPage implements OnInit {
 
   protected map: GoogleMap;
 
-
   constructor(
     protected playerService: PlayerService,
     protected alertController: AlertController,
@@ -41,13 +39,17 @@ export class AddPlayerPage implements OnInit {
     private camera: Camera,
     private geolocation: Geolocation,
     private platform: Platform
-
-  ) { }
+  ) {
+  }
 
   async ngOnInit() {
+    //Localização atual
+    this.localAtual();
+    //Plataforma e GoogleMaps
     await this.platform.ready();
     await this.loadMap();
 
+    //Pega Id para autilaização dos dados do Player
     this.id = this.activedRoute.snapshot.paramMap.get("id");
     if (this.id) {
       this.playerService.get(this.id).subscribe(
@@ -58,8 +60,6 @@ export class AddPlayerPage implements OnInit {
         //erro => this.id = null
       )
     }
-    //Localização atual
-    this.localAtual()
   }
 
   onsubmit(form) {
@@ -69,7 +69,6 @@ export class AddPlayerPage implements OnInit {
       this.player.foto = this.preview;
       this.player.lat = this.posLat;
       this.player.lng = this.posLng;
-
       if (!this.id) {
         this.playerService.save(this.player).then(
           res => {
@@ -140,21 +139,20 @@ export class AddPlayerPage implements OnInit {
     });
     await alert.present();
   }
-
+  //Google Maps
   loadMap() {
     this.map = GoogleMaps.create('map_canvas', {
       'camera': {
         'target': {
-          "lat": this.player.lat,
-          "lng": this.player.lng,
+          "lat": this.posLat,
+          "lng": this.posLng
         },
         'zoom': 15
       }
     });
-    //  this.addCluster(this.dummyData());
+    //this.addCluster(this.dummyData());
     this.minhaLocalizacao()
   }
-
   minhaLocalizacao() {
     LocationService.getMyLocation().then(
       (myLocation: MyLocation) => {
@@ -163,28 +161,36 @@ export class AddPlayerPage implements OnInit {
             target: myLocation.latLng
           }
         })
-        let marker:Marker = this.map.addMarkerSync({
+        //Adicionar marcador no mapa
+        let marker: Marker = this.map.addMarkerSync({
           position: {
             lat: myLocation.latLng.lat,
             lng: myLocation.latLng.lng
           },
           icon: "#00ff00",
           title: "Titulo",
-          snippet: "Comentário"
+          snippet: "Comentario"
         })
-
+        //adicionar eventos no mapa!
         marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(
-         res=>{
-          marker.setTitle(this.player.nome)
-          marker.setSnippet(this.player.nickname)
-          marker.showInfoWindow()
-
-         }
+          res => {
+            marker.setTitle(this.player.nome)
+            marker.setSnippet(this.player.nickname)
+            marker.showInfoWindow()
+          }
+        )
+        //colocar pontos extras
+        this.map.on(GoogleMapsEvent.MAP_CLICK).subscribe(
+          res => {
+            this.map.addMarker({
+              position: {
+                lat: res.position.lat,
+                lng: res.position.lng
+              }
+            })
+          }
         )
       }
-    );
+    )
   }
 }
-
-
-
