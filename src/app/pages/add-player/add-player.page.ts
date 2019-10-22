@@ -44,7 +44,7 @@ export class AddPlayerPage implements OnInit {
 
   async ngOnInit() {
     //Localização atual
-    this.localAtual();
+    await this.localAtual();
     //Plataforma e GoogleMaps
     await this.platform.ready();
     await this.loadMap();
@@ -63,12 +63,13 @@ export class AddPlayerPage implements OnInit {
   }
 
   onsubmit(form) {
-    if (!this.preview) {
+    if (this.preview) {
       this.presentAlert("Erro", "Deve inserir uma foto do perfil!");
     } else {
       this.player.foto = this.preview;
       this.player.lat = this.posLat;
       this.player.lng = this.posLng;
+      
       if (!this.id) {
         this.playerService.save(this.player).then(
           res => {
@@ -139,7 +140,8 @@ export class AddPlayerPage implements OnInit {
     });
     await alert.present();
   }
-  //Google Maps
+
+  //Google Maps -------------------------
   loadMap() {
     this.map = GoogleMaps.create('map_canvas', {
       'camera': {
@@ -153,6 +155,7 @@ export class AddPlayerPage implements OnInit {
     //this.addCluster(this.dummyData());
     this.minhaLocalizacao()
   }
+
   minhaLocalizacao() {
     LocationService.getMyLocation().then(
       (myLocation: MyLocation) => {
@@ -161,7 +164,7 @@ export class AddPlayerPage implements OnInit {
             target: myLocation.latLng
           }
         })
-        //Adicionar marcador no mapa
+        //adicionar marcador no Mapa
         let marker: Marker = this.map.addMarkerSync({
           position: {
             lat: myLocation.latLng.lat,
@@ -169,9 +172,9 @@ export class AddPlayerPage implements OnInit {
           },
           icon: "#00ff00",
           title: "Titulo",
-          snippet: "Comentario"
+          snippet: "Comentário"
         })
-        //adicionar eventos no mapa!
+        //adicionar eventos no mapa
         marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(
           res => {
             marker.setTitle(this.player.nome)
@@ -182,15 +185,17 @@ export class AddPlayerPage implements OnInit {
         //colocar pontos extras
         this.map.on(GoogleMapsEvent.MAP_CLICK).subscribe(
           res => {
-            this.map.addMarker({
-              position: {
-                lat: res.position.lat,
-                lng: res.position.lng
-              }
-            })
+            console.log(res)
+            // this.map.addMarker({
+            //   position:{
+            //     lat: res[0].lat,
+            //     lng: res[0].lng
+            //   }
+            // })
+            marker.setPosition(res[0])
           }
         )
       }
-    )
+    );
   }
 }
